@@ -1,5 +1,9 @@
 version: '3.8'
 
+# DocScope Services
+# For intelligent port management, use: ./install.sh
+# This will create docker-compose.override.yml with auto-detected ports
+
 services:
   docscope:
     build: .
