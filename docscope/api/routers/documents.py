@@ -12,6 +12,7 @@ from ..models import (
     DocumentListResponse, ErrorResponse
 )
 from ..dependencies import get_storage, rate_limiter, Pagination, verify_token
+from ...storage import DocumentStore
 from ...core.models import Document, DocumentFormat, DocumentStatus
 from ...core.logging import get_logger
 

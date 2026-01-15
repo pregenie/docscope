@@ -2,8 +2,9 @@
 
 from typing import Generator, Optional
 from functools import lru_cache
+from dataclasses import dataclass
 
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Query
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from ..storage import DocumentStore
@@ -11,11 +12,33 @@ from ..storage.database import DatabaseManager
 from ..search import SearchEngine
 from ..scanner import DocumentScanner
 from ..core.config import Config, StorageConfig, ScannerConfig
+from ..core.logging import get_logger
 from .config import api_config
+
+logger = get_logger(__name__)
 
 
 # Security
 security = HTTPBearer(auto_error=False)
+
+
+def init_dependencies():
+    """Initialize dependencies on startup"""
+    # Initialize storage
+    storage = get_storage()
+    storage.initialize()
+    
+    # Initialize search engine
+    search = get_search_engine()
+    search.initialize()
+    
+    logger.info("Dependencies initialized")
+
+
+def cleanup_dependencies():
+    """Cleanup dependencies on shutdown"""
+    # Cleanup can be added here if needed
+    logger.info("Dependencies cleaned up")
 
 
 @lru_cache()

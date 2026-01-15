@@ -19,7 +19,8 @@ def run_server(
     host: str = None,
     port: int = None,
     reload: bool = None,
-    workers: int = None
+    workers: int = None,
+    log_level: str = "info"
 ):
     """Run the DocScope API server"""
     
@@ -38,7 +39,7 @@ def run_server(
             host=host,
             port=port,
             reload=True,
-            log_level="info",
+            log_level=log_level,
             access_log=True
         )
     else:
@@ -48,7 +49,7 @@ def run_server(
             host=host,
             port=port,
             workers=workers,
-            log_level="info" if settings.debug else "error",
+            log_level=log_level,
             access_log=settings.debug
         )
 

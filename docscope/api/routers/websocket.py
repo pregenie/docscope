@@ -8,7 +8,7 @@ import asyncio
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
 from fastapi.websockets import WebSocketState
 
-from ..dependencies import get_storage, get_search_engine, verify_websocket_token
+from ..dependencies import get_storage, get_search_engine, verify_token
 from ...storage import DocumentStore
 from ...search import SearchEngine
 from ...core.logging import get_logger
@@ -101,7 +101,7 @@ async def websocket_endpoint(
     # Verify token if provided
     if token:
         try:
-            verify_websocket_token(token)
+            verify_token(token)
         except Exception as e:
             await websocket.close(code=1008, reason="Invalid token")
             return

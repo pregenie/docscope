@@ -16,7 +16,9 @@ class APIConfig(BaseSettings):
     # Application settings
     app_name: str = "DocScope API"
     app_version: str = "1.0.0"
+    version: str = "1.0.0"  # API version
     debug: bool = False
+    production: bool = False
     
     # Server settings
     host: str = Field(default="0.0.0.0", env="DOCSCOPE_HOST")
@@ -86,3 +88,8 @@ class APIConfig(BaseSettings):
 
 # Global config instance
 api_config = APIConfig()
+
+
+def get_settings() -> APIConfig:
+    """Get API configuration settings"""
+    return api_config
