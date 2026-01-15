@@ -22,9 +22,9 @@ DocScope is a powerful, enterprise-ready documentation management system that pr
 - **File Watching**: Auto-index documents on file system changes
 - **Performance Monitoring**: Built-in metrics and health checks
 
-## 🚀 Quick Start
+## 🚀 Quick Start - Two Simple Steps!
 
-### Super Simple Setup (NEW! 🎉)
+### Step 1: Install
 
 ```bash
 # Clone the repository
@@ -33,16 +33,22 @@ cd docscope
 
 # Install dependencies
 pip3 install -r requirements.txt
+```
 
-# Just run this - it opens your browser automatically!
+### Step 2: Run (That's it!)
+
+```bash
+# Just run this command - your browser opens automatically!
 python3 -m docscope
 ```
 
-**That's it!** 🎯 The browser opens, you select a directory, and DocScope scans everything automatically. No configuration files needed!
+**Done!** 🎯 Your browser opens, you select a directory, and DocScope scans everything automatically. No configuration files, no complex setup!
 
-### Alternative Installation Methods
+---
 
-#### Docker Installation (Production)
+## 📦 Alternative Installation Methods
+
+### Docker Installation (Production)
 
 ```bash
 # Clone the repository
@@ -56,7 +62,7 @@ chmod +x install.sh
 
 The installer automatically detects available ports to avoid conflicts.
 
-#### Manual Setup (Advanced Users)
+### Manual Setup (Advanced Users)
 
 ```bash
 # Install dependencies

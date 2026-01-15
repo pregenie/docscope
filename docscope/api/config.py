@@ -1,7 +1,13 @@
 """API configuration"""
 
 from typing import List, Optional
-from pydantic import BaseSettings, Field
+from pydantic import Field
+
+# Handle both Pydantic v1 and v2
+try:
+    from pydantic_settings import BaseSettings
+except ImportError:
+    from pydantic import BaseSettings
 
 
 class APIConfig(BaseSettings):
