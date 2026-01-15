@@ -7,6 +7,7 @@ from .tags import router as tags_router
 from .scanner import router as scanner_router
 from .health import router as health_router
 from .websocket import router as websocket_router
+from .filesystem import router as filesystem_router
 
 __all__ = [
     "documents_router",
@@ -16,4 +17,5 @@ __all__ = [
     "scanner_router",
     "health_router",
     "websocket_router",
+    "filesystem_router",
 ]

@@ -19,7 +19,8 @@ from .routers import (
     categories_router,
     tags_router,
     health_router,
-    websocket_router
+    websocket_router,
+    filesystem_router
 )
 from .dependencies import init_dependencies, cleanup_dependencies
 from ..core.logging import get_logger
@@ -161,6 +162,11 @@ def configure_routers(app: FastAPI) -> None:
     
     app.include_router(
         websocket_router,
+        prefix=api_v1_prefix
+    )
+    
+    app.include_router(
+        filesystem_router,
         prefix=api_v1_prefix
     )
     
