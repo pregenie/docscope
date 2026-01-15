@@ -74,13 +74,13 @@ docker-compose up -d
 pip install -r requirements.txt
 
 # Initialize the database
-python -m docscope init
+python -m docscope.cli init
 
 # Start scanning documents
-python -m docscope scan /path/to/docs
+python -m docscope.cli scan /path/to/docs
 
 # Run the server
-python -m docscope serve
+python -m docscope.cli serve
 ```
 
 ## 📖 Documentation

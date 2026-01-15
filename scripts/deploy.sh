@@ -121,7 +121,7 @@ run_migrations() {
         --restart=Never \
         --rm -it \
         -n ${NAMESPACE} \
-        -- python -m docscope migrate
+        -- python -m docscope.cli db init
 }
 
 check_deployment() {

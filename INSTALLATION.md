@@ -237,7 +237,7 @@ export DOCSCOPE_DATABASE_URL=sqlite:///docscope.db
 python -c "from docscope.storage import init_database; init_database()"
 
 # Start development server
-python -m docscope serve --reload
+python -m docscope.cli serve --reload
 ```
 
 ### Database Setup
@@ -416,7 +416,7 @@ curl http://localhost:${DOCSCOPE_API_PORT}/health
 
 After successful installation:
 
-1. **Add documents**: `python -m docscope scan /path/to/docs`
+1. **Add documents**: `python -m docscope.cli scan /path/to/docs`
 2. **Configure plugins**: Edit plugin configuration
 3. **Set up monitoring**: Configure health checks
 4. **Backup strategy**: Set up automated backups
