@@ -70,7 +70,7 @@ class DocumentStore:
                         'size': doc.size,
                         'modified_at': doc.modified_at,
                         'indexed_at': doc.indexed_at,
-                        'metadata': doc.metadata,
+                        'doc_metadata': doc.metadata,
                         'status': doc.status.value,
                         'error': doc.error
                     }
@@ -486,7 +486,7 @@ class DocumentStore:
             indexed_at=model.indexed_at,
             category=model.categories[0].name if model.categories else None,
             tags=[tag.name for tag in model.tags],
-            metadata=model.metadata or {},
+            metadata=model.doc_metadata or {},
             status=DocumentStatus(model.status) if model.status else DocumentStatus.PENDING,
             error=model.error
         )

@@ -51,7 +51,7 @@ class DocumentModel(Base):
     accessed_at = Column(DateTime)
     
     # Metadata stored as JSON
-    metadata = Column(JSON)
+    doc_metadata = Column(JSON)
     
     # Status and error tracking
     status = Column(String, default='pending', index=True)
@@ -85,7 +85,7 @@ class DocumentModel(Base):
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'modified_at': self.modified_at.isoformat() if self.modified_at else None,
             'indexed_at': self.indexed_at.isoformat() if self.indexed_at else None,
-            'metadata': self.metadata,
+            'metadata': self.doc_metadata,
             'status': self.status,
             'error': self.error,
             'tags': [tag.name for tag in self.tags],

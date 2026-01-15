@@ -45,7 +45,7 @@ class DocumentRepository:
             created_at=document.created_at,
             modified_at=document.modified_at,
             indexed_at=document.indexed_at,
-            metadata=document.metadata,
+            doc_metadata=document.metadata,
             status=document.status.value,
             error=document.error
         )

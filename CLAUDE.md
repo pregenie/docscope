@@ -30,23 +30,33 @@ docscope/
 
 ### Setup
 ```bash
-# Install dependencies
+# Install dependencies (use pip3 if pip points to Python 2)
 pip install -r requirements.txt
+# or
+pip3 install -r requirements.txt
 
-# Install with extras
+# Install with extras (use pip3 if needed)
 pip install -e ".[ai,ocr,enterprise]"
+# or
+pip3 install -e ".[ai,ocr,enterprise]"
 ```
 
 ### Running
 ```bash
-# Initialize project
-docscope init --name "My Docs"
+# Initialize project (use python3 if python points to Python 2)
+python -m docscope.cli init --name "My Docs"
+# or
+python3 -m docscope.cli init --name "My Docs"
 
 # Scan documentation
-docscope scan ./docs --recursive --formats md,pdf,html
+python -m docscope.cli scan ./docs --recursive --formats md,pdf,html
+# or
+python3 -m docscope.cli scan ./docs --recursive --formats md,pdf,html
 
 # Start server
-docscope serve --port 8080 --host 0.0.0.0
+python -m docscope.cli serve --port 8080 --host 0.0.0.0
+# or
+python3 -m docscope.cli serve --port 8080 --host 0.0.0.0
 
 # Run tests
 pytest tests/
