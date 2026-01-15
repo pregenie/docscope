@@ -1,0 +1,101 @@
+# DocScope Configuration
+version: "1.0"
+
+scanner:
+  paths:
+    - path: ./docs
+      recursive: true
+      watch: true
+    - path: ./README.md
+  
+  ignore:
+    - "**/*.tmp"
+    - "**/__pycache__"
+    - "**/node_modules"
+    - "**/.git"
+    - "**/venv"
+    - "**/.venv"
+    - "**/dist"
+    - "**/build"
+  
+  formats:
+    markdown:
+      enabled: true
+      extensions: [.md, .markdown]
+      processor: CommonMark
+    
+    text:
+      enabled: true
+      extensions: [.txt, .text]
+    
+    code:
+      enabled: true
+      languages: [python, javascript, go, rust, java]
+      syntax_highlight: true
+    
+    json:
+      enabled: true
+      extensions: [.json, .jsonl]
+    
+    yaml:
+      enabled: true
+      extensions: [.yaml, .yml]
+
+search:
+  engine: whoosh  # Options: whoosh, sqlite_fts
+  
+  settings:
+    fuzzy: true
+    max_results: 100
+    snippet_length: 200
+    highlight: true
+    stemming: true
+    
+  scoring:
+    algorithm: BM25
+    boost_title: 2.0
+    boost_headers: 1.5
+
+storage:
+  backend: sqlite  # Options: sqlite, postgresql
+  
+  sqlite:
+    path: ~/.docscope/docscope.db
+    journal_mode: WAL
+    
+  cache:
+    enabled: true
+    ttl: 3600
+
+server:
+  host: 0.0.0.0
+  port: 8080
+  workers: 4
+  reload: false
+  
+  cors:
+    enabled: true
+    origins: ["*"]
+  
+  auth:
+    enabled: false
+    
+  rate_limit:
+    enabled: true
+    requests_per_minute: 60
+
+logging:
+  level: INFO
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: ~/.docscope/docscope.log
+  console: true
+  
+monitoring:
+  metrics:
+    enabled: false
+    prometheus_port: 9090
+  
+plugins:
+  enabled: true
+  directory: ~/.docscope/plugins
+  auto_load: []

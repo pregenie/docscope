@@ -1,0 +1,154 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: docscope
+  namespace: docscope
+  labels:
+    app: docscope
+    component: api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: docscope
+      component: api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: docscope
+        component: api
+    spec:
+      serviceAccountName: docscope
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+      - name: docscope
+        image: docscope:latest
+        imagePullPolicy: Always
+        ports:
+        - name: api
+          containerPort: 8000
+          protocol: TCP
+        - name: ui
+          containerPort: 8080
+          protocol: TCP
+        env:
+        - name: DOCSCOPE_DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: docscope-secrets
+              key: database-url
+        - name: DOCSCOPE_REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: docscope-secrets
+              key: redis-url
+        - name: DOCSCOPE_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: docscope-secrets
+              key: secret-key
+        - name: DOCSCOPE_LOG_LEVEL
+          value: "INFO"
+        - name: DOCSCOPE_CORS_ORIGINS
+          value: "https://docscope.example.com"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: api
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: api
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: config
+          mountPath: /config
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: docscope-data-pvc
+      - name: config
+        configMap:
+          name: docscope-config
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: docscope-worker
+  namespace: docscope
+  labels:
+    app: docscope
+    component: worker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: docscope
+      component: worker
+  template:
+    metadata:
+      labels:
+        app: docscope
+        component: worker
+    spec:
+      serviceAccountName: docscope
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+      - name: worker
+        image: docscope:latest
+        imagePullPolicy: Always
+        command: ["python", "-m", "docscope", "worker"]
+        env:
+        - name: DOCSCOPE_DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: docscope-secrets
+              key: database-url
+        - name: DOCSCOPE_REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: docscope-secrets
+              key: redis-url
+        - name: DOCSCOPE_LOG_LEVEL
+          value: "INFO"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "200m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        volumeMounts:
+        - name: data
+          mountPath: /data
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: docscope-data-pvc

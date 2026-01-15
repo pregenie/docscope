@@ -1,0 +1,45 @@
+/* Dark Theme for DocScope */
+
+:root {
+    /* Background Colors */
+    --color-background: #0d1117;
+    --color-surface: #161b22;
+    --color-hover: #21262d;
+    
+    /* Text Colors */
+    --color-text: #c9d1d9;
+    --color-text-secondary: #8b949e;
+    --color-text-muted: #484f58;
+    
+    /* Border Colors */
+    --color-border: #30363d;
+    --color-border-light: #21262d;
+    
+    /* Primary Colors */
+    --color-primary: #58a6ff;
+    --color-primary-dark: #388bfd;
+    --color-primary-light: #79c0ff;
+    --color-primary-bg: #0d2d5f;
+    --color-secondary-dark: #484f58;
+    
+    /* Tag Colors */
+    --color-tag-bg: #21262d;
+    --color-tag-text: #8b949e;
+    
+    /* Highlight */
+    --color-highlight: #3a3200;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.4);
+    
+    /* Code Block Colors */
+    --color-code-bg: #161b22;
+    --color-code-text: #c9d1d9;
+    --color-code-keyword: #ff7b72;
+    --color-code-string: #a5d6ff;
+    --color-code-comment: #8b949e;
+    --color-code-function: #d2a8ff;
+    --color-code-number: #79c0ff;
+}

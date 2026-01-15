@@ -1,0 +1,106 @@
+version: '3.8'
+
+services:
+  docscope:
+    build: .
+    image: docscope:latest
+    container_name: docscope
+    restart: unless-stopped
+    ports:
+      - "8000:8000"  # API
+      - "8080:8080"  # Web UI
+    environment:
+      - DOCSCOPE_DATABASE_URL=postgresql://docscope:docscope@postgres:5432/docscope
+      - DOCSCOPE_REDIS_URL=redis://redis:6379/0
+      - DOCSCOPE_LOG_LEVEL=INFO
+      - DOCSCOPE_SECRET_KEY=${DOCSCOPE_SECRET_KEY:-change-me-in-production}
+      - DOCSCOPE_CORS_ORIGINS=${DOCSCOPE_CORS_ORIGINS:-http://localhost:3000,http://localhost:8080}
+    volumes:
+      - docscope-data:/data
+      - docscope-config:/config
+      - ./docs:/docs:ro  # Mount local docs directory for scanning
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - docscope-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: docscope-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=docscope
+      - POSTGRES_USER=docscope
+      - POSTGRES_PASSWORD=docscope
+      - POSTGRES_INIT_DB_ARGS=--encoding=UTF-8
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - docscope-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U docscope"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: docscope-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - docscope-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  nginx:
+    image: nginx:alpine
+    container_name: docscope-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certs:/etc/nginx/certs:ro
+      - nginx-cache:/var/cache/nginx
+    depends_on:
+      - docscope
+    networks:
+      - docscope-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  docscope-network:
+    driver: bridge
+
+volumes:
+  docscope-data:
+    driver: local
+  docscope-config:
+    driver: local
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local
+  nginx-cache:
+    driver: local

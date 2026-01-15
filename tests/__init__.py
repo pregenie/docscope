@@ -1,0 +1,1 @@
+"""DocScope test suite"""

@@ -1,0 +1,106 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: docscope-config
+  namespace: docscope
+  labels:
+    app: docscope
+data:
+  config.yaml: |
+    # DocScope Configuration
+    app:
+      name: DocScope
+      version: 1.0.0
+      environment: production
+      debug: false
+
+    server:
+      host: 0.0.0.0
+      api_port: 8000
+      ui_port: 8080
+      workers: 4
+      max_request_size: 104857600  # 100MB
+
+    database:
+      pool_size: 20
+      max_overflow: 40
+      pool_timeout: 30
+      pool_recycle: 3600
+      echo: false
+
+    redis:
+      max_connections: 50
+      socket_timeout: 5
+      socket_connect_timeout: 5
+      retry_on_timeout: true
+
+    search:
+      index_path: /data/index
+      batch_size: 100
+      commit_interval: 1000
+      optimize_interval: 10000
+      max_results: 1000
+
+    scanner:
+      batch_size: 50
+      max_workers: 8
+      ignore_patterns:
+        - "*.pyc"
+        - "__pycache__"
+        - ".git"
+        - ".svn"
+        - "node_modules"
+        - ".DS_Store"
+        - "Thumbs.db"
+
+    storage:
+      type: postgresql
+      data_dir: /data/documents
+      temp_dir: /tmp/docscope
+      max_file_size: 52428800  # 50MB
+
+    logging:
+      level: INFO
+      format: json
+      file: /data/logs/docscope.log
+      max_bytes: 10485760  # 10MB
+      backup_count: 5
+
+    security:
+      enable_cors: true
+      cors_origins:
+        - https://docscope.example.com
+      enable_rate_limit: true
+      rate_limit: 100
+      rate_limit_period: 60
+      enable_auth: true
+      jwt_algorithm: HS256
+      jwt_expiry: 3600
+
+    monitoring:
+      enable_metrics: true
+      metrics_port: 9090
+      enable_health_check: true
+      health_check_interval: 30
+
+    plugins:
+      enabled: true
+      directories:
+        - /app/docscope/plugins/builtin
+        - /data/plugins
+      auto_load:
+        - pdf_scanner
+        - markdown_processor
+
+    features:
+      enable_export: true
+      export_formats:
+        - json
+        - yaml
+        - markdown
+        - html
+        - csv
+      enable_watch: true
+      watch_interval: 5
+      enable_webhooks: true
+      webhook_timeout: 30
