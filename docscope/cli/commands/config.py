@@ -8,7 +8,6 @@ from rich.console import Console
 from rich.syntax import Syntax
 from rich.table import Table
 
-from ...core.config import Config
 from ...core.logging import get_logger
 
 console = Console()
@@ -32,7 +31,7 @@ def show_command(ctx, format, key):
     
     Display the current configuration or a specific key.
     """
-    config = ctx.obj['config']
+    config = ctx.obj.config
     
     try:
         if key:
@@ -76,7 +75,7 @@ def get_command(ctx, key):
     
     Retrieve the value of a specific configuration key.
     """
-    config = ctx.obj['config']
+    config = ctx.obj.config
     
     try:
         value = config.get(key)
@@ -105,7 +104,7 @@ def set_command(ctx, key, value, type):
     
     Update a configuration key with a new value.
     """
-    config = ctx.obj['config']
+    config = ctx.obj.config
     
     try:
         # Parse value based on type
@@ -142,7 +141,7 @@ def edit_command(ctx, editor):
     
     Open the configuration file in an editor.
     """
-    config = ctx.obj['config']
+    config = ctx.obj.config
     config_path = config.config_file
     
     if not config_path or not Path(config_path).exists():
@@ -176,7 +175,7 @@ def validate_command(ctx):
     
     Check if the current configuration is valid and complete.
     """
-    config = ctx.obj['config']
+    config = ctx.obj.config
     
     console.print("[blue]Validating configuration...[/blue]\n")
     
@@ -252,7 +251,7 @@ def migrate_command(ctx, from_version, backup):
     
     Update configuration file format to the latest version.
     """
-    config = ctx.obj['config']
+    config = ctx.obj.config
     config_path = Path(config.config_file) if config.config_file else None
     
     if not config_path or not config_path.exists():

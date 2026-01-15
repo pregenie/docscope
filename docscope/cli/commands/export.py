@@ -10,7 +10,6 @@ from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskPr
 
 from ...search import SearchEngine
 from ...storage import DocumentStore
-from ...core.config import Config
 from ...core.logging import get_logger
 
 console = Console()
@@ -39,7 +38,7 @@ def export_command(ctx, format, output, query, category, tags, template,
     Export documents to various formats for offline viewing or distribution.
     Supports filtering by query, category, and tags.
     """
-    config = ctx.obj['config']
+    config = ctx.obj.config
     
     # Initialize components
     storage = DocumentStore(config)

@@ -4,12 +4,10 @@ import click
 from datetime import datetime, timedelta
 from rich.console import Console
 from rich.table import Table
-from rich.chart import Chart
 from rich.panel import Panel
 
 from ...storage import DocumentStore
 from ...search import SearchEngine
-from ...core.config import Config
 from ...core.logging import get_logger
 
 console = Console()
@@ -30,7 +28,7 @@ def stats_command(ctx, format, period):
     Display statistics about indexed documents, search performance,
     and system usage.
     """
-    config = ctx.obj['config']
+    config = ctx.obj.config
     
     # Initialize components
     storage = DocumentStore(config)

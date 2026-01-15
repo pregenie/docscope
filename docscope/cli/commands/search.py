@@ -11,7 +11,6 @@ from rich.text import Text
 
 from ...search import SearchEngine
 from ...storage import DocumentStore
-from ...core.config import Config
 from ...core.logging import get_logger
 
 console = Console()
@@ -46,7 +45,7 @@ def search_command(ctx, query, limit, offset, format, category, tags, file_type,
     - Field: title:term, content:term, tags:term
     - Fuzzy: term~2 (edit distance)
     """
-    config = ctx.obj['config']
+    config = ctx.obj.config
     
     # Initialize components
     search_engine = SearchEngine(config)

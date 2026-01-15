@@ -10,7 +10,6 @@ from rich.table import Table
 from ...scanner import DocumentScanner
 from ...storage import DocumentStore
 from ...search import SearchEngine
-from ...core.config import Config
 from ...core.logging import get_logger
 
 console = Console()
@@ -36,7 +35,7 @@ def scan_command(ctx, paths, recursive, formats, incremental, since, exclude,
     Scan specified paths for documents and add them to the index.
     If no paths are provided, uses paths from configuration.
     """
-    config = ctx.obj['config']
+    config = ctx.obj.config
     
     # Initialize components
     scanner = DocumentScanner(config)

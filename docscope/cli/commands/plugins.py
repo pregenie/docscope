@@ -6,7 +6,6 @@ from pathlib import Path
 from rich.console import Console
 from rich.table import Table
 
-from ...core.config import Config
 from ...core.logging import get_logger
 
 console = Console()
@@ -29,7 +28,7 @@ def list_command(ctx, format):
     
     Display all installed plugins with their status and version.
     """
-    config = ctx.obj['config']
+    config = ctx.obj.config
     
     try:
         # Get plugin manager (would be implemented in plugin system)
@@ -94,7 +93,7 @@ def enable_command(ctx, name):
     
     Enable a disabled plugin by name.
     """
-    config = ctx.obj['config']
+    config = ctx.obj.config
     
     try:
         from ...plugins import PluginManager
@@ -122,7 +121,7 @@ def disable_command(ctx, name):
     
     Disable an enabled plugin by name.
     """
-    config = ctx.obj['config']
+    config = ctx.obj.config
     
     try:
         from ...plugins import PluginManager
@@ -152,7 +151,7 @@ def install_command(ctx, name, version, from_file):
     
     Install a plugin from the plugin repository or a local file.
     """
-    config = ctx.obj['config']
+    config = ctx.obj.config
     
     console.print(f"[blue]Installing plugin '{name}'...[/blue]")
     
@@ -197,7 +196,7 @@ def uninstall_command(ctx, name, keep_config):
     
     Remove a plugin and optionally its configuration.
     """
-    config = ctx.obj['config']
+    config = ctx.obj.config
     
     if not click.confirm(f"Are you sure you want to uninstall '{name}'?"):
         console.print("[yellow]Uninstall cancelled[/yellow]")
@@ -231,7 +230,7 @@ def info_command(ctx, name):
     
     Display detailed information about a specific plugin.
     """
-    config = ctx.obj['config']
+    config = ctx.obj.config
     
     try:
         from ...plugins import PluginManager
@@ -297,7 +296,7 @@ def search_command(ctx, query, limit):
     
     Search the plugin repository for available plugins.
     """
-    config = ctx.obj['config']
+    config = ctx.obj.config
     
     console.print(f"[blue]Searching for plugins matching '{query}'...[/blue]")
     

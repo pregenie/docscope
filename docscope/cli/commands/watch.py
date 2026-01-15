@@ -11,7 +11,6 @@ from rich.live import Live
 from ...scanner import DocumentScanner
 from ...storage import DocumentStore
 from ...search import SearchEngine
-from ...core.config import Config
 from ...core.logging import get_logger
 
 console = Console()
@@ -32,7 +31,7 @@ def watch_command(ctx, paths, interval, recursive, formats, auto_index, notify):
     Monitor specified directories for document changes and automatically
     update the index when files are added, modified, or deleted.
     """
-    config = ctx.obj['config']
+    config = ctx.obj.config
     
     # Initialize components
     scanner = DocumentScanner(config)

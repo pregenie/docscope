@@ -9,7 +9,6 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 
 from ...storage import DocumentStore
 from ...search import SearchEngine
-from ...core.config import Config
 from ...core.logging import get_logger
 
 console = Console()
@@ -31,7 +30,7 @@ def init_command(ctx, force):
     Create database tables and indexes. Use --force to reinitialize
     and drop existing data.
     """
-    config = ctx.obj['config']
+    config = ctx.obj.config
     
     if force:
         if not click.confirm("[red]This will delete all existing data. Continue?[/red]"):
@@ -84,7 +83,7 @@ def status_command(ctx):
     Display information about the database including size,
     document count, and health status.
     """
-    config = ctx.obj['config']
+    config = ctx.obj.config
     
     try:
         storage = DocumentStore(config)
@@ -178,7 +177,7 @@ def backup_command(ctx, output, compress):
     Create a backup of the database. Supports compression
     and custom output paths.
     """
-    config = ctx.obj['config']
+    config = ctx.obj.config
     
     if not output:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -236,7 +235,7 @@ def restore_command(ctx, backup_file, force):
     Restore the database from a backup file. Use --force to
     overwrite existing data without confirmation.
     """
-    config = ctx.obj['config']
+    config = ctx.obj.config
     backup_path = Path(backup_file)
     
     if not force:
@@ -287,7 +286,7 @@ def migrate_command(ctx, target_version, dry_run):
     Apply database schema migrations to update the database
     to the latest version or a specific target version.
     """
-    config = ctx.obj['config']
+    config = ctx.obj.config
     
     console.print("[blue]Checking for migrations...[/blue]")
     
@@ -358,7 +357,7 @@ def optimize_command(ctx, vacuum, analyze, reindex):
     Run various optimization tasks to improve database performance
     including vacuum, analyze, and reindex operations.
     """
-    config = ctx.obj['config']
+    config = ctx.obj.config
     
     # Default to all operations if none specified
     if not any([vacuum, analyze, reindex]):

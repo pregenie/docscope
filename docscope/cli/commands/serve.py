@@ -7,7 +7,6 @@ import sys
 from rich.console import Console
 from rich.table import Table
 
-from ...core.config import Config
 from ...core.logging import get_logger
 
 console = Console()
@@ -32,7 +31,7 @@ def serve_command(ctx, host, port, reload, workers, open_browser, production, lo
     The server provides both API endpoints and a web UI for browsing
     and searching documentation.
     """
-    config = ctx.obj['config']
+    config = ctx.obj.config
     
     # Use config values as defaults
     host = host or config.server.host or "0.0.0.0"
