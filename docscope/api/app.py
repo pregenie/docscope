@@ -164,10 +164,10 @@ def configure_routers(app: FastAPI) -> None:
         prefix=api_v1_prefix
     )
     
-    # Root endpoint
-    @app.get("/")
-    async def root() -> Dict[str, Any]:
-        """Root endpoint"""
+    # API info endpoint (moved from root to /api to avoid conflict with web UI)
+    @app.get("/api")
+    async def api_info() -> Dict[str, Any]:
+        """API information endpoint"""
         return {
             "name": settings.app_name,
             "version": settings.version,
