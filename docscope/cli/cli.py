@@ -128,21 +128,52 @@ def cli(ctx, config, verbose, quiet, debug, no_color):
 
 
 @cli.command()
-@click.option('--port', '-p', type=int, default=8080, help='Port to run on')
+@click.option('--port', '-p', type=int, default=0, help='Port to run on (0 = auto-detect)')
 @click.option('--open-browser', '-o', is_flag=True, default=True, help='Open browser automatically')
 @click.pass_context
 def start(ctx, port, open_browser):
     """Start DocScope with automatic setup
     
     This is the simplest way to start DocScope. It will:
-    1. Start the web server
-    2. Open your browser
-    3. Let you configure everything through the UI
+    1. Find an available port automatically
+    2. Start the web server
+    3. Open your browser
+    4. Let you configure everything through the UI
     """
     import webbrowser
     from pathlib import Path
     import tempfile
     import os
+    import socket
+    
+    # Function to find an available port
+    def find_available_port(start_port=8080, max_port=9000):
+        """Find an available port starting from start_port"""
+        if port != 0:  # User specified a port
+            # Check if it's available
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                try:
+                    s.bind(('127.0.0.1', port))
+                    return port
+                except OSError:
+                    console.print(f"[yellow]Port {port} is already in use. Finding an available port...[/yellow]")
+        
+        # Find an available port
+        for p in range(start_port, max_port):
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                try:
+                    s.bind(('127.0.0.1', p))
+                    return p
+                except OSError:
+                    continue
+        
+        # If no ports available in range, let OS assign one
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.bind(('127.0.0.1', 0))
+            return s.getsockname()[1]
+    
+    # Find available port
+    actual_port = find_available_port(port if port > 0 else 8080)
     
     # Create a minimal temporary config if none exists
     if not ctx.obj.config.config_file or not Path(ctx.obj.config.config_file).exists():
@@ -154,11 +185,13 @@ def start(ctx, port, open_browser):
             "version": "1.0",
             "project": "DocScope",
             "scanner": {"paths": []},
-            "server": {"host": "127.0.0.1", "port": port},
+            "server": {"host": "127.0.0.1", "port": actual_port},
             "storage": {"backend": "sqlite", "sqlite": {"path": str(temp_dir / "docscope.db")}}
         }
     
-    console.print(f"\n[bold green]Starting DocScope on http://localhost:{port}[/bold green]")
+    console.print(f"\n[bold green]Starting DocScope on http://localhost:{actual_port}[/bold green]")
+    if actual_port != port and port != 0:
+        console.print(f"[yellow](Originally requested port {port} was unavailable)[/yellow]")
     console.print("[dim]Press Ctrl+C to stop[/dim]\n")
     
     # Import and run server
@@ -170,14 +203,14 @@ def start(ctx, port, open_browser):
             import threading
             import time
             def open_browser_delayed():
-                time.sleep(1)  # Wait for server to start
-                webbrowser.open(f"http://localhost:{port}")
+                time.sleep(1.5)  # Wait for server to start
+                webbrowser.open(f"http://localhost:{actual_port}")
             threading.Thread(target=open_browser_delayed, daemon=True).start()
         
         # Run server
         run_server(
             host="127.0.0.1",
-            port=port,
+            port=actual_port,
             reload=False,
             workers=1,
             log_level="error"
