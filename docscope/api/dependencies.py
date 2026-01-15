@@ -22,20 +22,24 @@ logger = get_logger(__name__)
 security = HTTPBearer(auto_error=False)
 
 
-def init_dependencies():
+async def init_dependencies():
     """Initialize dependencies on startup"""
-    # Initialize storage
-    storage = get_storage()
-    storage.initialize()
-    
-    # Initialize search engine
-    search = get_search_engine()
-    search.initialize()
-    
-    logger.info("Dependencies initialized")
+    try:
+        # Initialize storage
+        storage = get_storage()
+        if hasattr(storage, 'initialize'):
+            storage.initialize()
+        
+        # Initialize search engine (already initialized in constructor)
+        search = get_search_engine()
+        
+        logger.info("Dependencies initialized successfully")
+    except Exception as e:
+        logger.error(f"Failed to initialize dependencies: {e}")
+        raise
 
 
-def cleanup_dependencies():
+async def cleanup_dependencies():
     """Cleanup dependencies on shutdown"""
     # Cleanup can be added here if needed
     logger.info("Dependencies cleaned up")
