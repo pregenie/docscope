@@ -24,63 +24,52 @@ DocScope is a powerful, enterprise-ready documentation management system that pr
 
 ## 🚀 Quick Start
 
-### Intelligent Installation (Recommended)
-
-DocScope includes an intelligent installer that automatically detects available ports to avoid conflicts:
+### Super Simple Setup (NEW! 🎉)
 
 ```bash
 # Clone the repository
 git clone https://github.com/pregenie/docscope.git
 cd docscope
 
-# Run the intelligent installer
+# Install dependencies
+pip3 install -r requirements.txt
+
+# Just run this - it opens your browser automatically!
+python3 -m docscope
+```
+
+**That's it!** 🎯 The browser opens, you select a directory, and DocScope scans everything automatically. No configuration files needed!
+
+### Alternative Installation Methods
+
+#### Docker Installation (Production)
+
+```bash
+# Clone the repository
+git clone https://github.com/pregenie/docscope.git
+cd docscope
+
+# Run the intelligent installer for Docker
 chmod +x install.sh
 ./install.sh
-
-# The installer will:
-# ✅ Detect available ports automatically
-# ✅ Configure Docker Compose
-# ✅ Create management scripts
-# ✅ Offer to start services immediately
 ```
 
-**The installer automatically finds free ports and shows you:**
-```
-Service          Default Port  →  Available Port
-─────────────────────────────────────────────────
-API              8000         →  8000     ✓
-Web UI           8080         →  8080     ✓  
-PostgreSQL       5432         →  5433     ↻
-Redis            6379         →  6379     ✓
-HTTP             80           →  8081     ↻
-HTTPS            443          →  8443     ↻
-```
+The installer automatically detects available ports to avoid conflicts.
 
-### Manual Docker Setup (Alternative)
-
-```bash
-# Clone the repository
-git clone https://github.com/pregenie/docscope.git
-cd docscope
-
-# Start with default ports (may cause conflicts)
-docker-compose up -d
-```
-
-### Local Installation
+#### Manual Setup (Advanced Users)
 
 ```bash
 # Install dependencies
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 
-# Initialize the database
-python -m docscope.cli init
+# Initialize a project manually
+python3 -m docscope init --name "My Docs"
 
-# Start scanning documents
-python -m docscope.cli scan /path/to/docs
+# Scan documents from command line
+python3 -m docscope scan /path/to/docs --recursive
 
-# Run the server
-python -m docscope.cli serve
+# Start server with custom options
+python3 -m docscope serve --port 8080
 ```
 
 ## 📖 Documentation

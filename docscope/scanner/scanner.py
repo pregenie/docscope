@@ -56,7 +56,8 @@ class DocumentScanner:
         
         for handler in handlers:
             # Check if format is enabled in config
-            format_config = self.config.formats.get(handler.format_type.value, {})
+            formats = getattr(self.config.scanner, 'formats', {}) if hasattr(self.config, 'scanner') else {}
+            format_config = formats.get(handler.format_type.value, {})
             if format_config.get('enabled', True):
                 self.registry.register(handler)
                 

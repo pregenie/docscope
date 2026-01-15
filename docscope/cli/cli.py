@@ -53,10 +53,16 @@ def cli(ctx, config, verbose, quiet, debug, no_color):
     A powerful tool for indexing, searching, and managing documentation
     across multiple formats and sources.
     
-    Examples:
+    Quick Start:
     
     \b
-    # Initialize a new project
+    # Start DocScope (easiest way - configure everything in the UI)
+    docscope start
+    
+    Other Commands:
+    
+    \b
+    # Initialize a project manually
     docscope init --name "My Project"
     
     \b
@@ -68,7 +74,7 @@ def cli(ctx, config, verbose, quiet, debug, no_color):
     docscope search "api authentication"
     
     \b
-    # Start the web server
+    # Start the web server with options
     docscope serve --open-browser
     
     For more information, visit: https://github.com/docscope/docscope
@@ -119,6 +125,69 @@ def cli(ctx, config, verbose, quiet, debug, no_color):
     ctx.obj.verbose = verbose
     ctx.obj.quiet = quiet
     ctx.obj.debug = debug
+
+
+@cli.command()
+@click.option('--port', '-p', type=int, default=8080, help='Port to run on')
+@click.option('--open-browser', '-o', is_flag=True, default=True, help='Open browser automatically')
+@click.pass_context
+def start(ctx, port, open_browser):
+    """Start DocScope with automatic setup
+    
+    This is the simplest way to start DocScope. It will:
+    1. Start the web server
+    2. Open your browser
+    3. Let you configure everything through the UI
+    """
+    import webbrowser
+    from pathlib import Path
+    import tempfile
+    import os
+    
+    # Create a minimal temporary config if none exists
+    if not ctx.obj.config.config_file or not Path(ctx.obj.config.config_file).exists():
+        temp_dir = Path(tempfile.gettempdir()) / "docscope"
+        temp_dir.mkdir(exist_ok=True)
+        
+        # Create minimal in-memory config
+        ctx.obj.config.data = {
+            "version": "1.0",
+            "project": "DocScope",
+            "scanner": {"paths": []},
+            "server": {"host": "127.0.0.1", "port": port},
+            "storage": {"backend": "sqlite", "sqlite": {"path": str(temp_dir / "docscope.db")}}
+        }
+    
+    console.print(f"\n[bold green]Starting DocScope on http://localhost:{port}[/bold green]")
+    console.print("[dim]Press Ctrl+C to stop[/dim]\n")
+    
+    # Import and run server
+    try:
+        from ..server import run_server
+        
+        # Open browser if requested
+        if open_browser:
+            import threading
+            import time
+            def open_browser_delayed():
+                time.sleep(1)  # Wait for server to start
+                webbrowser.open(f"http://localhost:{port}")
+            threading.Thread(target=open_browser_delayed, daemon=True).start()
+        
+        # Run server
+        run_server(
+            host="127.0.0.1",
+            port=port,
+            reload=False,
+            workers=1,
+            log_level="error"
+        )
+    except KeyboardInterrupt:
+        console.print("\n[yellow]Server stopped[/yellow]")
+    except Exception as e:
+        console.print(f"[red]Error starting server: {e}[/red]")
+        if ctx.obj.debug:
+            raise
 
 
 @cli.command()
