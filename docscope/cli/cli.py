@@ -112,7 +112,7 @@ def cli(ctx, config, verbose, quiet, debug, no_color):
     setup_logging(
         level=log_level,
         log_file=ctx.obj.config.logging.file if ctx.obj.config.logging else None,
-        console_output=not quiet
+        console=not quiet
     )
     
     # Store flags in context
