@@ -163,6 +163,11 @@ class DocScopeApp {
                 this.handleScanProgress(message);
                 break;
                 
+            case 'scan_update':
+                // Real-time scan updates
+                this.handleScanUpdate(message);
+                break;
+                
             case 'notification':
                 Toast.info(message.message);
                 break;
@@ -193,6 +198,45 @@ class DocScopeApp {
      */
     handleScanProgress(message) {
         Toast.info(`Scan progress: ${Math.round(message.progress * 100)}%`);
+    }
+    
+    /**
+     * Handle real-time scan updates
+     */
+    handleScanUpdate(message) {
+        // Update the scanned counter
+        if (message.scanned !== undefined) {
+            const scannedEl = document.getElementById('stat-scanned');
+            if (scannedEl) {
+                scannedEl.textContent = message.scanned.toLocaleString();
+                // Add pulse animation
+                scannedEl.parentElement.classList.add('pulse');
+                setTimeout(() => {
+                    scannedEl.parentElement.classList.remove('pulse');
+                }, 300);
+            }
+        }
+        
+        // Update documents count
+        if (message.documents !== undefined) {
+            document.getElementById('stat-total-docs').textContent = message.documents.toLocaleString();
+        }
+        
+        // Update categories count
+        if (message.categories !== undefined) {
+            document.getElementById('stat-categories').textContent = message.categories.toLocaleString();
+        }
+        
+        // Update tags count
+        if (message.tags !== undefined) {
+            document.getElementById('stat-tags').textContent = message.tags.toLocaleString();
+        }
+        
+        // Update index size
+        if (message.indexSize !== undefined) {
+            const sizeInMB = (message.indexSize / (1024 * 1024)).toFixed(1);
+            document.getElementById('stat-index-size').textContent = `${sizeInMB} MB`;
+        }
     }
     
     /**

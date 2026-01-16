@@ -1233,3 +1233,30 @@ input, select, textarea {
     padding: 0 15px;
     color: #666;
 }
+
+/* Pulse animation for updating stats cards during scanning */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    50% {
+        transform: scale(1.02);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        background: rgba(59, 130, 246, 0.05);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+}
+
+.stat-card.pulse {
+    animation: pulse 0.3s ease-in-out;
+}
+
+/* Highlight scanned card during scanning */
+#card-scanned.scanning {
+    border-color: #3b82f6;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(59, 130, 246, 0.02) 100%);
+}
