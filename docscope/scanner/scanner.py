@@ -17,7 +17,7 @@ from .handlers import (
     PythonHandler,
     HTMLHandler,
 )
-from ..core.models import Document, ScanResult, DocumentStatus
+from ..core.models import Document, ScanResult, DocumentStatus, DocumentFormat
 from ..core.config import ScannerConfig
 from ..core.logging import get_logger
 
@@ -104,18 +104,27 @@ class DocumentScanner:
         
         return False
     
-    def find_documents(self, paths: List[Path], recursive: bool = True) -> List[Path]:
+    def find_documents(self, paths: List[Path], recursive: bool = True, formats: Optional[List[str]] = None) -> List[Path]:
         """Find all documents to scan
         
         Args:
             paths: List of paths to scan
             recursive: Whether to scan recursively
+            formats: List of file extensions to include (e.g., ['md', 'txt', 'pdf'])
             
         Returns:
             List of document paths
         """
         documents = []
         seen_paths: Set[Path] = set()
+        
+        # Get supported extensions if formats specified
+        allowed_extensions = set()
+        if formats:
+            for fmt in formats:
+                # Add dot if not present
+                ext = fmt if fmt.startswith('.') else f'.{fmt}'
+                allowed_extensions.add(ext.lower())
         
         for path in paths:
             path = Path(path).resolve()
@@ -139,18 +148,47 @@ class DocumentScanner:
                         
                         for file in files:
                             file_path = root_path / file
-                            if not self.should_ignore(file_path) and file_path not in seen_paths:
+                            
+                            # Skip if already seen
+                            if file_path in seen_paths:
+                                continue
+                            
+                            # Check format FIRST if filter is specified
+                            if formats:
+                                if file_path.suffix.lower() not in allowed_extensions:
+                                    continue
+                            else:
+                                # If no format filter, check if we have a handler for this file
+                                if not self.registry.get_handler(file_path):
+                                    continue
+                            
+                            # Then check ignore patterns
+                            if not self.should_ignore(file_path):
                                 documents.append(file_path)
                                 seen_paths.add(file_path)
                 else:
                     # Only scan immediate children
                     for file_path in path.iterdir():
-                        if file_path.is_file() and not self.should_ignore(file_path):
-                            if file_path not in seen_paths:
+                        if file_path.is_file():
+                            # Skip if already seen
+                            if file_path in seen_paths:
+                                continue
+                            
+                            # Check format FIRST if filter is specified
+                            if formats:
+                                if file_path.suffix.lower() not in allowed_extensions:
+                                    continue
+                            else:
+                                # If no format filter, check if we have a handler for this file
+                                if not self.registry.get_handler(file_path):
+                                    continue
+                            
+                            # Then check ignore patterns
+                            if not self.should_ignore(file_path):
                                 documents.append(file_path)
                                 seen_paths.add(file_path)
         
-        logger.info(f"Found {len(documents)} documents to scan")
+        logger.info(f"Found {len(documents)} documents to scan (formats: {formats}, paths: {[str(p) for p in paths]})")
         return documents
     
     def process_document(self, path: Path) -> Optional[Document]:
@@ -194,7 +232,7 @@ class DocumentScanner:
             )
             return doc
     
-    def scan(self, paths: List[Path], recursive: bool = True) -> ScanResult:
+    def scan(self, paths: List[Path], recursive: bool = True, formats: Optional[List[str]] = None) -> ScanResult:
         """Scan documents in parallel with progress tracking
         
         Args:
@@ -216,7 +254,7 @@ class DocumentScanner:
                 path_objects.append(p)
         
         # Find all documents
-        documents = self.find_documents(path_objects, recursive)
+        documents = self.find_documents(path_objects, recursive, formats)
         
         if not documents:
             logger.info("No documents found to scan")

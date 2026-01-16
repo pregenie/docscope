@@ -187,6 +187,9 @@ class ScanResponse(BaseModel):
     skipped: int
     errors: List[Dict[str, str]]
     duration: float
+    documents_found: int = 0
+    new_documents: int = 0
+    updated_documents: int = 0
 
 
 class CategoryResponse(BaseModel):

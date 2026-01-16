@@ -48,7 +48,9 @@ async def scan_documents(
         if request.incremental and request.since:
             result = scanner.incremental_scan(paths, since=request.since)
         else:
-            result = scanner.scan(paths, recursive=request.recursive)
+            # Pass formats if provided
+            formats = request.formats if hasattr(request, 'formats') else None
+            result = scanner.scan(paths, recursive=request.recursive, formats=formats)
         
         # Store documents in database
         stored = storage.store_scan_result(result)
@@ -72,7 +74,10 @@ async def scan_documents(
             failed=result.failed,
             skipped=result.skipped,
             errors=result.errors,
-            duration=result.duration
+            duration=result.duration,
+            documents_found=result.total,
+            new_documents=stored,
+            updated_documents=0  # TODO: track updates
         )
         
     except HTTPException:

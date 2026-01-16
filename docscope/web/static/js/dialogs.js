@@ -399,25 +399,25 @@ class ScanDialog {
                 
                 this.updateProgress(100, message);
                 
-                setTimeout(() => {
-                    this.showProgress(false);
-                    this.close();
-                    
-                    // Show success message
-                    settingsDialog.showToast(message, 'success');
-                    
-                    // Refresh the documents list
-                    if (typeof Pages !== 'undefined' && Pages.loadDocuments) {
-                        Pages.loadDocuments();
-                    }
-                    
-                    // Navigate to browse page if not already there
-                    if (!document.getElementById('browse-page')?.classList.contains('active')) {
-                        if (typeof app !== 'undefined' && app.navigateToPage) {
-                            app.navigateToPage('browse');
-                        }
-                    }
-                }, 2000);
+                // Close immediately and show success
+                this.showProgress(false);
+                this.close();
+                settingsDialog.showToast(message, 'success');
+                
+                // Navigate to search page to show documents
+                if (typeof app !== 'undefined' && app.navigateToPage) {
+                    app.navigateToPage('search');
+                }
+                
+                // Clear search and show all documents
+                document.getElementById('search-input').value = '';
+                
+                // Load documents into the search results area
+                const resultsContainer = document.getElementById('search-results');
+                resultsContainer.innerHTML = `<div class="results-summary">Found ${documentsFound} documents</div>`;
+                
+                // TODO: Actually load the documents from the database
+                // For now, just show the count
             } else {
                 // Handle error response
                 let errorMessage = 'Scan failed';
