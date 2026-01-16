@@ -229,6 +229,81 @@
                 </button>
             </div>
             <div class="modal-body">
+                <div class="settings-section featured">
+                    <h3>📁 Document Origin</h3>
+                    <p class="section-description">Select the primary location where your documents are stored</p>
+                    
+                    <div class="origin-selector">
+                        <label class="setting-item">
+                            <span>Current Origin</span>
+                            <div class="input-group">
+                                <input type="text" id="setting-directory" placeholder="No origin selected" readonly>
+                                <button class="btn btn-primary" id="setting-select-origin-btn">Select Origin</button>
+                            </div>
+                        </label>
+                        
+                        <div class="quick-access-section">
+                            <p class="quick-access-label">Quick Access:</p>
+                            <div class="quick-access-buttons">
+                                <button class="btn btn-secondary quick-select" data-path="~/Documents">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                                        <polyline points="14 2 14 8 20 8"/>
+                                    </svg>
+                                    Documents
+                                </button>
+                                <button class="btn btn-secondary quick-select" data-path="~/Desktop">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                                        <line x1="8" y1="21" x2="16" y2="21"/>
+                                        <line x1="12" y1="17" x2="12" y2="21"/>
+                                    </svg>
+                                    Desktop
+                                </button>
+                                <button class="btn btn-secondary quick-select" data-path="~/Downloads">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                                        <polyline points="7 10 12 15 17 10"/>
+                                        <line x1="12" y1="15" x2="12" y2="3"/>
+                                    </svg>
+                                    Downloads
+                                </button>
+                                <button class="btn btn-secondary quick-select" data-path="~">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                                        <polyline points="9 22 9 12 15 12 15 22"/>
+                                    </svg>
+                                    Home
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="additional-sources">
+                            <label class="setting-item">
+                                <span>Additional Directories</span>
+                                <div id="additional-directories-list"></div>
+                                <button class="btn btn-secondary btn-small" id="add-directory-btn">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <line x1="12" y1="5" x2="12" y2="19"/>
+                                        <line x1="5" y1="12" x2="19" y2="12"/>
+                                    </svg>
+                                    Add Directory
+                                </button>
+                            </label>
+                        </div>
+                        
+                        <label class="setting-item">
+                            <input type="checkbox" id="setting-autoscan">
+                            <span>Automatically scan directories on startup</span>
+                        </label>
+                        
+                        <label class="setting-item">
+                            <input type="checkbox" id="setting-watch">
+                            <span>Watch directories for changes</span>
+                        </label>
+                    </div>
+                </div>
+                
                 <div class="settings-section">
                     <h3>Appearance</h3>
                     <label class="setting-item">
@@ -238,21 +313,6 @@
                             <option value="dark">Dark</option>
                             <option value="auto">Auto</option>
                         </select>
-                    </label>
-                </div>
-                
-                <div class="settings-section">
-                    <h3>Document Sources</h3>
-                    <label class="setting-item">
-                        <span>Primary Directory</span>
-                        <div class="input-group">
-                            <input type="text" id="setting-directory" placeholder="/path/to/documents">
-                            <button class="btn btn-secondary" id="setting-browse-btn">Browse</button>
-                        </div>
-                    </label>
-                    <label class="setting-item">
-                        <span>Auto-scan on startup</span>
-                        <input type="checkbox" id="setting-autoscan">
                     </label>
                 </div>
                 

@@ -925,3 +925,154 @@ input, select, textarea {
 .toast-info {
     background: #2196f3;
 }
+
+/* Origin Selector Styles */
+.settings-section.featured {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 25px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+.settings-section.featured h3 {
+    color: white;
+    margin-bottom: 10px;
+    font-size: 1.3em;
+}
+
+.section-description {
+    opacity: 0.9;
+    margin-bottom: 20px;
+    font-size: 0.95em;
+}
+
+.origin-selector {
+    background: white;
+    color: #333;
+    padding: 20px;
+    border-radius: 6px;
+}
+
+.origin-selector .setting-item {
+    margin-bottom: 20px;
+}
+
+.origin-selector .setting-item > span:first-child {
+    font-weight: 600;
+    color: #333;
+}
+
+#setting-directory {
+    background: #f8f9fa;
+    font-family: monospace;
+    font-size: 0.9em;
+}
+
+#setting-select-origin-btn {
+    min-width: 140px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    font-weight: 500;
+}
+
+#setting-select-origin-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.quick-access-section {
+    margin: 20px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.quick-access-label {
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.quick-access-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+}
+
+.quick-select {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 8px;
+    gap: 6px;
+    background: white;
+    border: 2px solid #e0e0e0;
+    transition: all 0.2s;
+}
+
+.quick-select:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.quick-select svg {
+    width: 24px;
+    height: 24px;
+    stroke-width: 2;
+}
+
+.additional-sources {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+#additional-directories-list {
+    margin: 10px 0;
+}
+
+.additional-directory-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+.additional-directory-item .directory-path {
+    font-family: monospace;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.btn-small {
+    padding: 6px 12px;
+    font-size: 0.9em;
+}
+
+.btn-icon.btn-small {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#add-directory-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.setting-item input[type="checkbox"] + span {
+    margin-left: 8px;
+    font-weight: normal;
+}
