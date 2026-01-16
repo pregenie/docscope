@@ -160,8 +160,19 @@ const Pages = {
             this.showScanDialog();
         });
         
-        // Load documents when page is shown
-        this.loadDocuments();
+        // Check if origin is set when page is shown
+        const settings = JSON.parse(localStorage.getItem('docscope-settings') || '{}');
+        if (!settings.directory) {
+            // Show prompt to set origin first
+            setTimeout(() => {
+                if (confirm('No document origin has been set. Would you like to select a directory to scan?')) {
+                    settingsDialog.open();
+                }
+            }, 500);
+        } else {
+            // Load documents when page is shown
+            this.loadDocuments();
+        }
     },
     
     /**
@@ -169,6 +180,21 @@ const Pages = {
      */
     async loadDocuments(filters = {}, page = 1) {
         const gridContainer = document.getElementById('document-grid');
+        const settings = JSON.parse(localStorage.getItem('docscope-settings') || '{}');
+        
+        // Check if origin is set
+        if (!settings.directory) {
+            gridContainer.innerHTML = '';
+            const emptyState = Components.createEmptyState('No document origin set');
+            emptyState.innerHTML += `
+                <div style="margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="settingsDialog.open()">Select Documents Folder</button>
+                </div>
+            `;
+            gridContainer.appendChild(emptyState);
+            return;
+        }
+        
         gridContainer.innerHTML = '';
         gridContainer.appendChild(Components.createLoadingSpinner());
         
@@ -184,12 +210,21 @@ const Pages = {
             
             gridContainer.innerHTML = '';
             
-            if (response.items.length === 0) {
-                gridContainer.appendChild(
-                    Components.createEmptyState('No documents found')
-                );
+            // Handle both response.items and direct array response
+            const documents = response.items || response;
+            const totalDocs = response.total || documents.length;
+            
+            if (!Array.isArray(documents) || documents.length === 0) {
+                const emptyState = Components.createEmptyState('No documents found');
+                emptyState.innerHTML += `
+                    <div style="margin-top: 20px;">
+                        <p>Origin: ${settings.directory}</p>
+                        <button class="btn btn-primary" onclick="scanDialog.open()">Scan for Documents</button>
+                    </div>
+                `;
+                gridContainer.appendChild(emptyState);
             } else {
-                response.items.forEach(doc => {
+                documents.forEach(doc => {
                     gridContainer.appendChild(Components.createDocumentCard(doc));
                 });
                 
@@ -197,8 +232,8 @@ const Pages = {
                 const paginationContainer = document.getElementById('pagination');
                 paginationContainer.innerHTML = '';
                 
-                if (response.total > limit) {
-                    const totalPages = Math.ceil(response.total / limit);
+                if (totalDocs > limit) {
+                    const totalPages = Math.ceil(totalDocs / limit);
                     const pagination = Components.createPagination(
                         page,
                         totalPages,
@@ -210,9 +245,15 @@ const Pages = {
             
         } catch (error) {
             gridContainer.innerHTML = '';
-            gridContainer.appendChild(
-                Components.createEmptyState(`Failed to load documents: ${error.message}`)
-            );
+            const errorState = Components.createEmptyState(`Failed to load documents: ${error.message}`);
+            if (settings.directory) {
+                errorState.innerHTML += `
+                    <div style="margin-top: 20px;">
+                        <button class="btn btn-primary" onclick="window.location.reload()">Retry</button>
+                    </div>
+                `;
+            }
+            gridContainer.appendChild(errorState);
             Toast.error(`Failed to load documents: ${error.message}`);
         }
     },
@@ -397,8 +438,16 @@ const Pages = {
      * Show scan dialog
      */
     showScanDialog() {
-        // Would show a dialog to configure and start scanning
-        Toast.info('Scan dialog not implemented yet');
+        const settings = JSON.parse(localStorage.getItem('docscope-settings') || '{}');
+        if (!settings.directory) {
+            // No origin set, open settings first
+            if (confirm('Please set a document origin first. Open settings?')) {
+                settingsDialog.open();
+            }
+        } else {
+            // Open scan dialog with origin pre-filled
+            scanDialog.open();
+        }
     },
     
     /**

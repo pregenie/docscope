@@ -55,14 +55,20 @@ class SettingsDialog {
             // Remove readonly after selection
             document.getElementById('setting-directory').removeAttribute('readonly');
             
+            // Save the setting immediately
+            const settings = JSON.parse(localStorage.getItem('docscope-settings') || '{}');
+            settings.directory = selectedPath;
+            localStorage.setItem('docscope-settings', JSON.stringify(settings));
+            
             // Show confirmation
             this.showToast(`Origin set to: ${selectedPath}`, 'success');
             
-            // Optionally trigger an immediate scan
-            if (confirm('Would you like to scan this directory now?')) {
-                this.close();
-                scanDialog.startScan(selectedPath);
-            }
+            // Close settings and automatically start scanning
+            this.close();
+            
+            // Start scanning immediately with progress notification
+            this.showToast('Starting document scan...', 'info');
+            scanDialog.startScan(selectedPath);
         }, currentPath);
     }
     
@@ -75,13 +81,18 @@ class SettingsDialog {
             if (response.ok && data.exists && data.is_directory) {
                 document.getElementById('setting-directory').value = data.path;
                 document.getElementById('setting-directory').removeAttribute('readonly');
+                
+                // Save the setting immediately
+                const settings = JSON.parse(localStorage.getItem('docscope-settings') || '{}');
+                settings.directory = data.path;
+                localStorage.setItem('docscope-settings', JSON.stringify(settings));
+                
                 this.showToast(`Origin set to: ${data.path}`, 'success');
                 
-                // Optionally trigger scan
-                if (confirm('Would you like to scan this directory now?')) {
-                    this.close();
-                    scanDialog.startScan(data.path);
-                }
+                // Close settings and automatically start scanning
+                this.close();
+                this.showToast('Starting document scan...', 'info');
+                scanDialog.startScan(data.path);
             } else {
                 this.showToast('Directory does not exist or is not accessible', 'error');
             }
@@ -290,12 +301,18 @@ class ScanDialog {
         }, currentPath);
     }
     
-    async startScan(directory = null) {
+    async startScan(directory = null, isBackground = false) {
         let scanDirs = [];
         
         if (directory) {
             // Scan specific directory
             scanDirs = [directory];
+            // Don't show dialog if we're doing a background scan
+            if (!isBackground && !this.modal?.classList.contains('active')) {
+                // Show the scan dialog with the directory pre-filled
+                document.getElementById('scan-directory').value = directory;
+                this.open();
+            }
         } else {
             // Get directory from scan dialog
             const scanDir = document.getElementById('scan-directory')?.value;
@@ -386,14 +403,20 @@ class ScanDialog {
                     this.showProgress(false);
                     this.close();
                     
-                    // Refresh the documents list if on browse page
-                    if (document.getElementById('browse-page')?.classList.contains('active')) {
-                        // Trigger refresh
-                        document.getElementById('refresh-btn')?.click();
-                    }
-                    
                     // Show success message
                     settingsDialog.showToast(message, 'success');
+                    
+                    // Refresh the documents list
+                    if (typeof Pages !== 'undefined' && Pages.loadDocuments) {
+                        Pages.loadDocuments();
+                    }
+                    
+                    // Navigate to browse page if not already there
+                    if (!document.getElementById('browse-page')?.classList.contains('active')) {
+                        if (typeof app !== 'undefined' && app.navigateToPage) {
+                            app.navigateToPage('browse');
+                        }
+                    }
                 }, 2000);
             } else {
                 // Handle error response

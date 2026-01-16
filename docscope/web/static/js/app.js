@@ -71,6 +71,16 @@ class DocScopeApp {
      * Navigate to page
      */
     navigateToPage(pageName) {
+        // Check if origin is set for pages that need it
+        const settings = JSON.parse(localStorage.getItem('docscope-settings') || '{}');
+        if (!settings.directory && (pageName === 'browse' || pageName === 'stats')) {
+            // No origin set, prompt user
+            if (confirm('No document origin has been set. Would you like to select a directory now?')) {
+                settingsDialog.open();
+                return; // Don't navigate yet
+            }
+        }
+        
         // Update nav active state
         document.querySelectorAll('.nav-link').forEach(link => {
             link.classList.toggle('active', link.dataset.page === pageName);
@@ -90,10 +100,7 @@ class DocScopeApp {
             // Trigger page-specific actions
             switch(pageName) {
                 case 'browse':
-                    if (!page.dataset.loaded) {
-                        Pages.loadDocuments();
-                        page.dataset.loaded = 'true';
-                    }
+                    Pages.loadDocuments();
                     break;
                 case 'categories':
                     if (!page.dataset.loaded) {
@@ -394,10 +401,24 @@ class DocScopeApp {
      */
     showWelcome() {
         const hasVisited = localStorage.getItem('docscope-visited');
+        const settings = JSON.parse(localStorage.getItem('docscope-settings') || '{}');
         
         if (!hasVisited) {
-            Toast.info('Welcome to DocScope! Start by searching for documentation or browsing documents.');
             localStorage.setItem('docscope-visited', 'true');
+            
+            // Check if origin is set
+            if (!settings.directory) {
+                // First time user - prompt to set origin
+                setTimeout(() => {
+                    Toast.info('Welcome to DocScope! Let\'s start by selecting your documentation folder.');
+                    settingsDialog.open();
+                }, 500);
+            } else {
+                Toast.info('Welcome to DocScope! Start by searching for documentation or browsing documents.');
+            }
+        } else if (!settings.directory) {
+            // Returning user but no origin set
+            Toast.info('Please select a documentation folder to get started.');
         }
     }
 }
