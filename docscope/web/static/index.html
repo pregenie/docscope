@@ -22,14 +22,6 @@
                 <span>DocScope</span>
             </div>
             
-            <nav class="nav">
-                <a href="#" data-page="search" class="nav-link active">Search</a>
-                <a href="#" data-page="browse" class="nav-link">Browse</a>
-                <a href="#" data-page="categories" class="nav-link">Categories</a>
-                <a href="#" data-page="tags" class="nav-link">Tags</a>
-                <a href="#" data-page="stats" class="nav-link">Statistics</a>
-            </nav>
-            
             <div class="header-actions">
                 <button class="btn-icon" id="theme-toggle" title="Toggle theme">
                     <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -59,8 +51,28 @@
     
     <!-- Main Content -->
     <main class="main">
-        <!-- Search Page -->
+        <!-- Single Page App - Search with Statistics -->
         <div id="search-page" class="page active">
+            <!-- Statistics Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Documents</h3>
+                    <div class="stat-value" id="stat-total-docs">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Categories</h3>
+                    <div class="stat-value" id="stat-categories">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Tags</h3>
+                    <div class="stat-value" id="stat-tags">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Index Size</h3>
+                    <div class="stat-value" id="stat-index-size">0 MB</div>
+                </div>
+            </div>
+            
             <div class="search-hero">
                 <h1>Search Documentation</h1>
                 <p>Find what you're looking for across all your documentation</p>
@@ -71,10 +83,17 @@
                            class="search-input" 
                            placeholder="Search for documentation..."
                            autocomplete="off">
-                    <button id="search-btn" class="search-btn">
+                    <button id="search-btn" class="search-btn" title="Search">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <circle cx="11" cy="11" r="8"/>
                             <path d="m21 21-4.35-4.35"/>
+                        </svg>
+                    </button>
+                    <button id="scan-quick-btn" class="btn-icon" title="Scan for documents">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M3 9h18v10a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                            <path d="M3 9V5a2 2 0 012-2h14a2 2 0 012 2v4"/>
+                            <line x1="12" y1="3" x2="12" y2="9"/>
                         </svg>
                     </button>
                 </div>
@@ -84,6 +103,7 @@
                         <option value="">All Formats</option>
                         <option value="markdown">Markdown</option>
                         <option value="text">Text</option>
+                        <option value="pdf">PDF</option>
                         <option value="json">JSON</option>
                         <option value="yaml">YAML</option>
                         <option value="html">HTML</option>
@@ -95,98 +115,15 @@
                     
                     <select id="filter-sort" class="filter-select">
                         <option value="score">Relevance</option>
-                        <option value="date">Date</option>
+                        <option value="date">Date Modified</option>
                         <option value="title">Title</option>
+                        <option value="size">Size</option>
                     </select>
                 </div>
             </div>
             
             <div class="search-results" id="search-results">
                 <!-- Results will be inserted here -->
-            </div>
-        </div>
-        
-        <!-- Browse Page -->
-        <div id="browse-page" class="page">
-            <div class="page-header">
-                <h1>Browse Documents</h1>
-                <div class="page-actions">
-                    <button class="btn btn-secondary" id="refresh-btn">Refresh</button>
-                    <button class="btn btn-primary" id="scan-btn">Scan Documents</button>
-                </div>
-            </div>
-            
-            <div class="document-grid" id="document-grid">
-                <!-- Documents will be inserted here -->
-            </div>
-            
-            <div class="pagination" id="pagination">
-                <!-- Pagination will be inserted here -->
-            </div>
-        </div>
-        
-        <!-- Categories Page -->
-        <div id="categories-page" class="page">
-            <div class="page-header">
-                <h1>Categories</h1>
-                <button class="btn btn-primary" id="add-category-btn">Add Category</button>
-            </div>
-            
-            <div class="category-tree" id="category-tree">
-                <!-- Category tree will be inserted here -->
-            </div>
-        </div>
-        
-        <!-- Tags Page -->
-        <div id="tags-page" class="page">
-            <div class="page-header">
-                <h1>Tags</h1>
-                <button class="btn btn-primary" id="add-tag-btn">Add Tag</button>
-            </div>
-            
-            <div class="tag-cloud" id="tag-cloud">
-                <!-- Tag cloud will be inserted here -->
-            </div>
-        </div>
-        
-        <!-- Statistics Page -->
-        <div id="stats-page" class="page">
-            <div class="page-header">
-                <h1>Statistics</h1>
-            </div>
-            
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h3>Total Documents</h3>
-                    <div class="stat-value" id="stat-total-docs">-</div>
-                </div>
-                
-                <div class="stat-card">
-                    <h3>Categories</h3>
-                    <div class="stat-value" id="stat-categories">-</div>
-                </div>
-                
-                <div class="stat-card">
-                    <h3>Tags</h3>
-                    <div class="stat-value" id="stat-tags">-</div>
-                </div>
-                
-                <div class="stat-card">
-                    <h3>Index Size</h3>
-                    <div class="stat-value" id="stat-index-size">-</div>
-                </div>
-            </div>
-            
-            <div class="charts">
-                <div class="chart-container">
-                    <h3>Documents by Format</h3>
-                    <canvas id="chart-formats"></canvas>
-                </div>
-                
-                <div class="chart-container">
-                    <h3>Recent Activity</h3>
-                    <canvas id="chart-activity"></canvas>
-                </div>
             </div>
         </div>
     </main>
@@ -207,11 +144,8 @@
                 <div id="doc-content"></div>
             </div>
             <div class="modal-footer">
-                <div id="doc-metadata"></div>
-                <div class="modal-actions">
-                    <button class="btn btn-secondary" id="doc-export">Export</button>
-                    <button class="btn btn-secondary" id="doc-edit">Edit</button>
-                </div>
+                <button class="btn btn-secondary" id="doc-export">Export</button>
+                <button class="btn btn-secondary" id="doc-edit">Edit</button>
             </div>
         </div>
     </div>
@@ -229,111 +163,91 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="settings-section featured">
-                    <h3>📁 Document Origin</h3>
-                    <p class="section-description">Select the primary location where your documents are stored</p>
+                <!-- Document Origin Section -->
+                <div class="settings-section">
+                    <h3>Document Origin</h3>
+                    <div class="setting-item">
+                        <label for="setting-directory">Primary Directory</label>
+                        <div class="directory-selector">
+                            <input type="text" id="setting-directory" readonly placeholder="No directory selected">
+                            <button class="btn btn-primary" id="setting-select-origin-btn">Select Directory</button>
+                        </div>
+                        <div class="quick-select-container">
+                            <p>Quick select:</p>
+                            <button class="quick-select" data-path="~/Documents">Documents</button>
+                            <button class="quick-select" data-path="~/Desktop">Desktop</button>
+                            <button class="quick-select" data-path="~/Downloads">Downloads</button>
+                        </div>
+                    </div>
                     
-                    <div class="origin-selector">
-                        <label class="setting-item">
-                            <span>Current Origin</span>
-                            <div class="input-group">
-                                <input type="text" id="setting-directory" placeholder="No origin selected" readonly>
-                                <button class="btn btn-primary" id="setting-select-origin-btn">Select Origin</button>
-                            </div>
-                        </label>
-                        
-                        <div class="quick-access-section">
-                            <p class="quick-access-label">Quick Access:</p>
-                            <div class="quick-access-buttons">
-                                <button class="btn btn-secondary quick-select" data-path="~/Documents">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-                                        <polyline points="14 2 14 8 20 8"/>
-                                    </svg>
-                                    Documents
-                                </button>
-                                <button class="btn btn-secondary quick-select" data-path="~/Desktop">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-                                        <line x1="8" y1="21" x2="16" y2="21"/>
-                                        <line x1="12" y1="17" x2="12" y2="21"/>
-                                    </svg>
-                                    Desktop
-                                </button>
-                                <button class="btn btn-secondary quick-select" data-path="~/Downloads">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
-                                        <polyline points="7 10 12 15 17 10"/>
-                                        <line x1="12" y1="15" x2="12" y2="3"/>
-                                    </svg>
-                                    Downloads
-                                </button>
-                                <button class="btn btn-secondary quick-select" data-path="~">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-                                        <polyline points="9 22 9 12 15 12 15 22"/>
-                                    </svg>
-                                    Home
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="additional-sources">
-                            <label class="setting-item">
-                                <span>Additional Directories</span>
-                                <div id="additional-directories-list"></div>
-                                <button class="btn btn-secondary btn-small" id="add-directory-btn">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                        <line x1="12" y1="5" x2="12" y2="19"/>
-                                        <line x1="5" y1="12" x2="19" y2="12"/>
-                                    </svg>
-                                    Add Directory
-                                </button>
-                            </label>
-                        </div>
-                        
-                        <label class="setting-item">
-                            <input type="checkbox" id="setting-autoscan">
-                            <span>Automatically scan directories on startup</span>
-                        </label>
-                        
-                        <label class="setting-item">
-                            <input type="checkbox" id="setting-watch">
-                            <span>Watch directories for changes</span>
-                        </label>
+                    <div class="setting-item">
+                        <label>Additional Directories</label>
+                        <div id="additional-directories-list"></div>
+                        <button class="btn btn-secondary" id="add-directory-btn">Add Directory</button>
                     </div>
                 </div>
                 
+                <!-- Appearance Section -->
                 <div class="settings-section">
                     <h3>Appearance</h3>
-                    <label class="setting-item">
-                        <span>Theme</span>
+                    <div class="setting-item">
+                        <label for="setting-theme">Theme</label>
                         <select id="setting-theme">
                             <option value="light">Light</option>
                             <option value="dark">Dark</option>
                             <option value="auto">Auto</option>
                         </select>
-                    </label>
+                    </div>
                 </div>
                 
+                <!-- Search Section -->
                 <div class="settings-section">
                     <h3>Search</h3>
-                    <label class="setting-item">
-                        <span>Results per page</span>
-                        <input type="number" id="setting-results" value="20" min="10" max="100">
-                    </label>
-                    <label class="setting-item">
-                        <span>Enable fuzzy search</span>
-                        <input type="checkbox" id="setting-fuzzy" checked>
-                    </label>
+                    <div class="setting-item">
+                        <label for="setting-results">Results per page</label>
+                        <input type="number" id="setting-results" min="10" max="100" step="10" value="20">
+                    </div>
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="setting-fuzzy">
+                            Enable fuzzy search
+                        </label>
+                    </div>
                 </div>
                 
+                <!-- Organization Section -->
                 <div class="settings-section">
-                    <h3>API</h3>
-                    <label class="setting-item">
-                        <span>API Endpoint</span>
+                    <h3>Organization</h3>
+                    <div class="setting-item">
+                        <button class="btn btn-secondary" id="manage-categories-btn">Manage Categories</button>
+                        <button class="btn btn-secondary" id="manage-tags-btn">Manage Tags</button>
+                    </div>
+                </div>
+                
+                <!-- Scanning Section -->
+                <div class="settings-section">
+                    <h3>Scanning</h3>
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="setting-autoscan">
+                            Auto-scan on startup
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="setting-watch">
+                            Watch directories for changes
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Advanced Section -->
+                <div class="settings-section">
+                    <h3>Advanced</h3>
+                    <div class="setting-item">
+                        <label for="setting-api">API Endpoint</label>
                         <input type="text" id="setting-api" value="/api/v1">
-                    </label>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -342,48 +256,9 @@
         </div>
     </div>
     
-    <!-- Directory Picker Dialog -->
-    <div id="directory-picker" class="modal">
-        <div class="modal-content modal-lg">
-            <div class="modal-header">
-                <h2>Select Directory</h2>
-                <button class="btn-icon modal-close">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <line x1="18" y1="6" x2="6" y2="18"/>
-                        <line x1="6" y1="6" x2="18" y2="18"/>
-                    </svg>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="directory-picker-content">
-                    <div class="directory-path">
-                        <input type="text" id="directory-path-input" placeholder="/path/to/directory">
-                        <button class="btn btn-secondary" id="directory-go-btn">Go</button>
-                        <button class="btn btn-secondary" id="directory-home-btn" title="Go to home">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-                                <polyline points="9 22 9 12 15 12 15 22"/>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="directory-breadcrumb" id="directory-breadcrumb">
-                        <!-- Breadcrumb will be inserted here -->
-                    </div>
-                    <div class="directory-listing" id="directory-listing">
-                        <!-- Directory contents will be inserted here -->
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" id="directory-cancel-btn">Cancel</button>
-                <button class="btn btn-primary" id="directory-select-btn">Select This Directory</button>
-            </div>
-        </div>
-    </div>
-    
     <!-- Scan Dialog -->
     <div id="scan-dialog" class="modal">
-        <div class="modal-content">
+        <div class="modal-content modal-sm">
             <div class="modal-header">
                 <h2>Scan Documents</h2>
                 <button class="btn-icon modal-close">
@@ -395,20 +270,15 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label>Directory to Scan</label>
+                    <label for="scan-directory">Directory to scan</label>
                     <div class="input-group">
-                        <input type="text" id="scan-directory" placeholder="/path/to/documents">
+                        <input type="text" id="scan-directory" placeholder="Select directory...">
                         <button class="btn btn-secondary" id="scan-browse-btn">Browse</button>
                     </div>
                 </div>
+                
                 <div class="form-group">
-                    <label>
-                        <input type="checkbox" id="scan-recursive" checked>
-                        Scan subdirectories recursively
-                    </label>
-                </div>
-                <div class="form-group">
-                    <label>File Types to Include</label>
+                    <label>File types to scan</label>
                     <div class="checkbox-group">
                         <label><input type="checkbox" name="scan-format" value="md" checked> Markdown</label>
                         <label><input type="checkbox" name="scan-format" value="txt" checked> Text</label>
@@ -418,11 +288,19 @@
                         <label><input type="checkbox" name="scan-format" value="yaml"> YAML</label>
                     </div>
                 </div>
-                <div id="scan-progress" class="progress-container" style="display: none;">
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="scan-progress-fill"></div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="scan-recursive" checked>
+                        Scan subdirectories
+                    </label>
+                </div>
+                
+                <div id="scan-progress" style="display: none;">
+                    <div class="progress">
+                        <div id="scan-progress-fill" class="progress-fill"></div>
                     </div>
-                    <div class="progress-text" id="scan-progress-text">Scanning...</div>
+                    <p id="scan-progress-text">Scanning...</p>
                 </div>
             </div>
             <div class="modal-footer">
@@ -432,13 +310,43 @@
         </div>
     </div>
     
+    <!-- Directory Picker Modal -->
+    <div id="directory-picker" class="modal" style="z-index: 2000;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Select Directory</h2>
+                <button class="btn-icon modal-close">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="directory-picker-path">
+                    <div id="directory-breadcrumb"></div>
+                </div>
+                <div class="directory-picker-list" id="directory-list">
+                    <!-- Directory items will be inserted here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span id="selected-path-display"></span>
+                <div>
+                    <button class="btn btn-secondary" id="directory-cancel">Cancel</button>
+                    <button class="btn btn-primary" id="directory-select">Select This Folder</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- Toast Container -->
-    <div id="toast-container" class="toast-container"></div>
+    <div id="toast-container"></div>
     
     <!-- Scripts -->
     <script src="/static/js/config.js"></script>
-    <script src="/static/js/api.js"></script>
     <script src="/static/js/utils.js"></script>
+    <script src="/static/js/api.js"></script>
     <script src="/static/js/components.js"></script>
     <script src="/static/js/directory-picker.js"></script>
     <script src="/static/js/dialogs.js"></script>

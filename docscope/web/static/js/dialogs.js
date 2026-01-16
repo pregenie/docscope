@@ -251,8 +251,8 @@ class ScanDialog {
     }
     
     setupEventListeners() {
-        // Scan button on browse page
-        document.getElementById('scan-btn')?.addEventListener('click', () => {
+        // Scan button on search page  
+        document.getElementById('scan-quick-btn')?.addEventListener('click', () => {
             this.open();
         });
         

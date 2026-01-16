@@ -21,15 +21,9 @@ class DocScopeApp {
         // Initialize theme
         this.setTheme(this.currentTheme);
         
-        // Initialize navigation
-        this.initNavigation();
-        
-        // Initialize pages
+        // Initialize single page app
         Pages.initSearchPage();
-        Pages.initBrowsePage();
-        Pages.initCategoriesPage();
-        Pages.initTagsPage();
-        Pages.initStatsPage();
+        Pages.loadStatistics();  // Load stats on startup
         
         // Initialize modals
         this.initModals();
@@ -53,72 +47,18 @@ class DocScopeApp {
     }
     
     /**
-     * Initialize navigation
+     * Initialize navigation (removed - single page now)
      */
     initNavigation() {
-        const navLinks = document.querySelectorAll('.nav-link');
-        
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const page = link.dataset.page;
-                this.navigateToPage(page);
-            });
-        });
+        // No longer needed - single page app
     }
     
     /**
-     * Navigate to page
+     * Navigate to page (removed - single page now)
      */
     navigateToPage(pageName) {
-        // Check if origin is set for pages that need it
-        const settings = JSON.parse(localStorage.getItem('docscope-settings') || '{}');
-        if (!settings.directory && (pageName === 'browse' || pageName === 'stats')) {
-            // No origin set, prompt user
-            if (confirm('No document origin has been set. Would you like to select a directory now?')) {
-                settingsDialog.open();
-                return; // Don't navigate yet
-            }
-        }
-        
-        // Update nav active state
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.classList.toggle('active', link.dataset.page === pageName);
-        });
-        
-        // Hide all pages
-        document.querySelectorAll('.page').forEach(page => {
-            page.classList.remove('active');
-        });
-        
-        // Show selected page
-        const page = document.getElementById(`${pageName}-page`);
-        if (page) {
-            page.classList.add('active');
-            Pages.currentPage = pageName;
-            
-            // Trigger page-specific actions
-            switch(pageName) {
-                case 'browse':
-                    Pages.loadDocuments();
-                    break;
-                case 'categories':
-                    if (!page.dataset.loaded) {
-                        Pages.loadCategoryTree();
-                        page.dataset.loaded = 'true';
-                    }
-                    break;
-                case 'tags':
-                    if (!page.dataset.loaded) {
-                        Pages.loadTagCloud();
-                        page.dataset.loaded = 'true';
-                    }
-                    break;
-                case 'stats':
-                    Pages.loadStatistics();
-                    break;
-            }
-        }
+        // No longer needed - single page app
+        // Everything is on the search page now
     }
     
     /**
