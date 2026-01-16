@@ -291,11 +291,27 @@ class ScanDialog {
     }
     
     async startScan(directory = null) {
-        const scanDir = directory || document.getElementById('scan-directory')?.value;
+        let scanDirs = [];
         
-        if (!scanDir) {
-            this.showError('Please select a directory to scan');
-            return;
+        if (directory) {
+            // Scan specific directory
+            scanDirs = [directory];
+        } else {
+            // Get directory from scan dialog
+            const scanDir = document.getElementById('scan-directory')?.value;
+            if (!scanDir) {
+                this.showError('Please select a directory to scan');
+                return;
+            }
+            scanDirs = [scanDir];
+            
+            // Optionally include additional directories from settings
+            const settings = JSON.parse(localStorage.getItem('docscope-settings') || '{}');
+            if (settings.additionalDirectories && settings.additionalDirectories.length > 0) {
+                if (confirm('Also scan additional directories from settings?')) {
+                    scanDirs = scanDirs.concat(settings.additionalDirectories);
+                }
+            }
         }
         
         // Get selected formats
@@ -321,23 +337,50 @@ class ScanDialog {
         document.getElementById('scan-cancel-btn').textContent = 'Close';
         
         try {
-            // Start the scan
+            // Start the scan - API expects 'paths' array
+            const requestBody = {
+                paths: scanDirs,  // Array of directories to scan
+                recursive: recursive,
+                formats: formats,
+                incremental: false
+            };
+            
+            console.log('Scan request:', requestBody);
+            
+            // Update progress text to show what's being scanned
+            const dirText = scanDirs.length === 1 ? 
+                `Scanning: ${scanDirs[0]}` : 
+                `Scanning ${scanDirs.length} directories`;
+            this.updateProgress(10, dirText);
+            
             const response = await fetch('/api/v1/scanner/scan', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    path: scanDir,
-                    recursive: recursive,
-                    formats: formats
-                })
+                body: JSON.stringify(requestBody)
             });
             
-            const data = await response.json();
+            let data;
+            try {
+                data = await response.json();
+            } catch (jsonError) {
+                console.error('Failed to parse response:', jsonError);
+                data = { detail: 'Invalid response from server' };
+            }
             
             if (response.ok) {
-                this.updateProgress(100, `Scan complete: ${data.documents_found || 0} documents found`);
+                // Handle successful scan
+                const documentsFound = data.documents_found || data.total_documents || 0;
+                const newDocuments = data.new_documents || documentsFound;
+                const updatedDocuments = data.updated_documents || 0;
+                
+                let message = `Scan complete: ${documentsFound} documents found`;
+                if (updatedDocuments > 0) {
+                    message += ` (${newDocuments} new, ${updatedDocuments} updated)`;
+                }
+                
+                this.updateProgress(100, message);
                 
                 setTimeout(() => {
                     this.showProgress(false);
@@ -350,15 +393,48 @@ class ScanDialog {
                     }
                     
                     // Show success message
-                    settingsDialog.showToast(`Scan complete: ${data.documents_found || 0} documents indexed`, 'success');
+                    settingsDialog.showToast(message, 'success');
                 }, 2000);
             } else {
-                throw new Error(data.detail || 'Scan failed');
+                // Handle error response
+                let errorMessage = 'Scan failed';
+                if (data.detail) {
+                    errorMessage = typeof data.detail === 'string' ? 
+                        data.detail : 
+                        JSON.stringify(data.detail);
+                } else if (data.error) {
+                    errorMessage = data.error;
+                } else if (data.message) {
+                    errorMessage = data.message;
+                }
+                
+                throw new Error(errorMessage);
             }
         } catch (error) {
             console.error('Scan error:', error);
-            this.showError(error.message || 'Failed to scan directory');
-            this.showProgress(false);
+            console.error('Error details:', {
+                message: error.message,
+                stack: error.stack,
+                response: error.response
+            });
+            
+            // Show detailed error message
+            let errorMsg = 'Failed to scan directory: ';
+            if (error.message.includes('fetch')) {
+                errorMsg += 'Could not connect to server';
+            } else if (error.message.includes('JSON')) {
+                errorMsg += 'Invalid response from server';
+            } else {
+                errorMsg += error.message;
+            }
+            
+            this.showError(errorMsg);
+            this.updateProgress(0, 'Scan failed');
+            
+            // Re-enable buttons after error
+            setTimeout(() => {
+                this.showProgress(false);
+            }, 2000);
         } finally {
             this.isScanning = false;
             document.getElementById('scan-start-btn').disabled = false;
