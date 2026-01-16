@@ -239,21 +239,27 @@ const Pages = {
         treeContainer.appendChild(Components.createLoadingSpinner());
         
         try {
+            console.log('Loading categories...');
             const categories = await api.getCategoryTree();
+            console.log('Categories loaded:', categories);
             
             treeContainer.innerHTML = '';
             
-            if (categories.length === 0) {
+            // Check if it's an array or has a nested structure
+            const categoryList = Array.isArray(categories) ? categories : (categories.items || []);
+            
+            if (categoryList.length === 0) {
                 treeContainer.appendChild(
-                    Components.createEmptyState('No categories found')
+                    Components.createEmptyState('No categories found. Click "Add Category" to create your first category.')
                 );
             } else {
-                categories.forEach(category => {
+                categoryList.forEach(category => {
                     treeContainer.appendChild(Components.createCategoryItem(category));
                 });
             }
             
         } catch (error) {
+            console.error('Failed to load categories:', error);
             treeContainer.innerHTML = '';
             treeContainer.appendChild(
                 Components.createEmptyState(`Failed to load categories: ${error.message}`)
@@ -284,21 +290,27 @@ const Pages = {
         cloudContainer.appendChild(Components.createLoadingSpinner());
         
         try {
+            console.log('Loading tags...');
             const response = await api.getTagCloud();
+            console.log('Tags loaded:', response);
             
             cloudContainer.innerHTML = '';
             
-            if (response.tags.length === 0) {
+            // Handle both direct array and wrapped response
+            const tagList = response.tags || response;
+            
+            if (!tagList || (Array.isArray(tagList) && tagList.length === 0)) {
                 cloudContainer.appendChild(
-                    Components.createEmptyState('No tags found')
+                    Components.createEmptyState('No tags found. Tags will appear as documents are scanned and categorized.')
                 );
             } else {
-                response.tags.forEach(tag => {
+                tagList.forEach(tag => {
                     cloudContainer.appendChild(Components.createTagItem(tag));
                 });
             }
             
         } catch (error) {
+            console.error('Failed to load tags:', error);
             cloudContainer.innerHTML = '';
             cloudContainer.appendChild(
                 Components.createEmptyState(`Failed to load tags: ${error.message}`)

@@ -1076,3 +1076,160 @@ input, select, textarea {
     margin-left: 8px;
     font-weight: normal;
 }
+
+/* Modal z-index layering */
+.modal {
+    z-index: 1000;
+}
+
+.modal.active {
+    z-index: 1000;
+}
+
+/* Directory picker should appear above other modals when opened from them */
+#directory-picker.modal {
+    z-index: 2000;
+}
+
+#directory-picker.modal.active {
+    z-index: 2000;
+}
+
+/* Documents table styles */
+.documents-section {
+    margin-top: 30px;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.documents-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #eee;
+}
+
+.documents-header h2 {
+    margin: 0;
+    color: #333;
+}
+
+.documents-count {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.documents-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.documents-table thead {
+    background: #f8f9fa;
+}
+
+.documents-table th {
+    text-align: left;
+    padding: 12px;
+    font-weight: 600;
+    color: #555;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.documents-table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.documents-table tbody tr:hover {
+    background: #f8f9ff;
+}
+
+.document-title {
+    font-weight: 500;
+    color: #0066cc;
+    cursor: pointer;
+}
+
+.document-title:hover {
+    text-decoration: underline;
+}
+
+.document-path {
+    font-size: 0.85em;
+    color: #666;
+    font-family: monospace;
+}
+
+.document-format {
+    display: inline-block;
+    padding: 2px 8px;
+    background: #e3f2fd;
+    color: #1976d2;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: 500;
+}
+
+.document-size {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.document-date {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.documents-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+}
+
+.documents-empty svg {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 20px;
+    opacity: 0.3;
+}
+
+.documents-loading {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+}
+
+.documents-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.documents-pagination button {
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.documents-pagination button:hover:not(:disabled) {
+    background: #f8f9fa;
+}
+
+.documents-pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.documents-pagination .page-info {
+    padding: 0 15px;
+    color: #666;
+}
